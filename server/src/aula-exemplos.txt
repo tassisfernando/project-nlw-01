@@ -1,0 +1,58 @@
+import express from 'express';
+
+const app = express();
+
+app.use(express.json()); //para o express entender JSON 
+
+//Rota: endereço completo da requisição
+//Recurso: qual entidade estamos acessando 
+
+//Tipos de requisição:
+//GET: busca informações no back-end
+//POST: cria uma nova informação ||
+//PUT: atualiza uma informação já existente ||
+//DELETE: remove uma informação ||
+
+const users = [
+    'Diego',
+    'Tássis',
+    'Assis',
+    'Daniel',
+    'Tião'
+];
+
+app.get('/users', (request, response) => {
+    const search = String(request.query.search);
+
+    const filteredUsers = search ? users.filter(user => user.includes(search)) : users;
+    
+    return response.json(filteredUsers);
+});
+
+//Tipos de parâmetros:
+//Request param: parâmetro que vem na própria rota que identifica um recurso
+//Query param: parâmetro que vem na própria rota, geralmente opcional para fazer filtros 
+//Request body: parâmetros para criação/atualização de informações
+
+app.get('/users/:id', (request, response) => {
+    const id = Number(request.params.id);
+    const user = users[id];
+
+    return response.json(user);
+});
+
+//request: recebe dados vindo com a requisição 
+//response: retorna uma resposta ao serviço de front-end
+app.post('/users', (request, response) => {
+    const data = request.body;
+
+    const user = {
+        name: data.name,
+        email: data.email
+    } 
+
+    return response.json(user);
+    //sempre utilizar o return antes do response
+});
+
+app.listen(3333);
